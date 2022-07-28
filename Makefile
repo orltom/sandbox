@@ -7,11 +7,12 @@ BUILD_DIR=${PROJECT_DIR}/build
 TOOLS_BIN_DIR=${PROJECT_DIR}/tools/bin
 REPORT_DIR=${BUILD_DIR}/reports
 
-# Tools
 GOIMPORTS = $(TOOLS_BIN_DIR)/goimports
 GOLANGCI_LINT = $(TOOLS_BIN_DIR)/golangci-lint
 GOLICENSES = $(TOOLS_BIN_DIR)/go-licenses
 GOTESTSUM = $(TOOLS_BIN_DIR)/gotestsum
+
+EXAMPLE_IMG = golang-http-example:latest
 
 
 .PHONY: all
@@ -57,8 +58,18 @@ go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.
 ##@ Build
 .PHONY: build
 build: ## Build manager & network-manager binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/golang-http-example" ./...
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/golang-http-example-amd64" ./...
 
+.PHONY: build-docker-image
+build-docker-image: build ## Build docker images
+	$(call build-docker-image,$(EXAMPLE_IMG),config/docker/httpd/Dockerfile)
+
+define build-docker-image
+DOCKER_BUILDKIT=1 docker build --platform linux/amd64 -t "$(1)" \
+		--build-arg "GIT_HASH=$$(git rev-parse HEAD)" \
+		--build-arg "BUILD_DATE=$$(date --iso-8601=s)" \
+		-f "$(2)" .
+endef
 
 ## Helper Rules
 $(TOOLS_BIN_DIR)/%: FORCE
