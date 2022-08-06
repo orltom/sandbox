@@ -6,13 +6,17 @@ OUTPUT_DIRECTORY=${PROJECT_DIR}/bin
 BUILD_DIR=${PROJECT_DIR}/build
 TOOLS_BIN_DIR=${PROJECT_DIR}/tools/bin
 REPORT_DIR=${BUILD_DIR}/reports
+SCRIPT_DIR=${PROJECT_DIR}/scripts
+
 
 GOIMPORTS = $(TOOLS_BIN_DIR)/goimports
 GOLANGCI_LINT = $(TOOLS_BIN_DIR)/golangci-lint
 GOLICENSES = $(TOOLS_BIN_DIR)/go-licenses
 GOTESTSUM = $(TOOLS_BIN_DIR)/gotestsum
 
-EXAMPLE_IMG = golang-http-example:latest
+API_IMG = golang-http-example:latest
+DB_IMG = golang-db-example:latest
+
 
 
 .PHONY: all
@@ -60,9 +64,23 @@ go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.
 build: ## Build manager & network-manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/golang-http-example-amd64" ./...
 
+.PHONY:
+download-jokes: ## Download random chuck norris jokes
+	mkdir -p $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)/jokes.sql
+	$(SCRIPT_DIR)/generate-sql-statements.sh >> $(BUILD_DIR)/jokes.sql
+
+
 .PHONY: build-docker-image
-build-docker-image: build ## Build docker images
-	$(call build-docker-image,$(EXAMPLE_IMG),config/docker/httpd/Dockerfile)
+build-docker-image:build-api-docker-image  build-database-docker-image ## Build docker images
+
+.PHONY: build-api-docker-image
+build-api-docker-image: build ## Build API docker images
+	$(call build-docker-image,$(API_IMG),config/docker/httpd/Dockerfile)
+
+.PHONY: build-database-docker-image
+build-database-docker-image: download-jokes ## Build DB docker images
+	$(call build-docker-image,$(DB_IMG),config/docker/sql/Dockerfile)
 
 define build-docker-image
 DOCKER_BUILDKIT=1 docker build --platform linux/amd64 -t "$(1)" \
