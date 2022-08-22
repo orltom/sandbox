@@ -1,13 +1,25 @@
-# Webapplication example in Golang
+# Simple Web Application Demo
+A simple demo web application written in Golang. 
 
 ## Prerequisites
 * Install [docker](https://www.docker.com/)
-* Install [golang 1.18](https://go.dev/doc/install)
+* Install [golang](https://go.dev/doc/install)
+* Install [kubectl](https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
+* Install [k3d](https://k3d.io/)
+* Install [tilt](https://tilt.dev/)
+
+## Setup
+Setup k3d cluster
+```shell
+k3d cluster create dev-cluster \
+  --agents-memory=8G \
+  --registry-create dev-cluster-registry \
+  -p "30000-30099:30000-30099@server:0"
+```
 
 ## Usage
 ```shell
-make clean build build-docker-image
-docker run --rm golang-http-example
+tilt up
 ```
 
 ## Contributing

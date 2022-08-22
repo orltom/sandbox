@@ -61,7 +61,10 @@ go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.
 
 ##@ Build
 .PHONY: build
-build: ## Build manager & network-manager binary.
+build: build-api build-docker-images ## Build web application and docker images
+
+.PHONY: build-api
+build-api: ## Build manager & network-manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/golang-http-example-amd64" ./...
 
 .PHONY:
@@ -70,9 +73,8 @@ download-jokes: ## Download random chuck norris jokes
 	rm -rf $(BUILD_DIR)/jokes.sql
 	$(SCRIPT_DIR)/generate-sql-statements.sh >> $(BUILD_DIR)/jokes.sql
 
-
-.PHONY: build-docker-image
-build-docker-image:build-api-docker-image  build-database-docker-image ## Build docker images
+.PHONY: build-docker-images
+build-docker-images: build-api-docker-image build-database-docker-image ## Build docker images
 
 .PHONY: build-api-docker-image
 build-api-docker-image: build ## Build API docker images
@@ -80,7 +82,7 @@ build-api-docker-image: build ## Build API docker images
 
 .PHONY: build-database-docker-image
 build-database-docker-image: download-jokes ## Build DB docker images
-	$(call build-docker-image,$(DB_IMG),config/docker/sql/Dockerfile)
+	$(call build-docker-image,$(DB_IMG),config/docker/database/Dockerfile)
 
 define build-docker-image
 DOCKER_BUILDKIT=1 docker build --platform linux/amd64 -t "$(1)" \
