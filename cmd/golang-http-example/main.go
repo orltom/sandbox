@@ -21,14 +21,16 @@ func main() {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.GET("/jokes", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "hello world",
-		})
-	})
+	router.GET("/jokes", randomJokes)
 
 	if err := router.Run(":8080"); err != nil {
 		println("Can not start web application")
 		os.Exit(1)
 	}
+}
+
+func randomJokes(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "hello world",
+	})
 }
