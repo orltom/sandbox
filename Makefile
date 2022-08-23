@@ -1,3 +1,4 @@
+# Setting SHELL to bash allows bash commands to be executed by recipes.
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
@@ -71,7 +72,12 @@ build-api: ## Build manager & network-manager binary.
 download-jokes: ## Download random chuck norris jokes
 	mkdir -p $(BUILD_DIR)
 	rm -rf $(BUILD_DIR)/jokes.sql
-	$(SCRIPT_DIR)/generate-sql-statements.sh >> $(BUILD_DIR)/jokes.sql
+	echo "CREATE DATABASE jokes;" >> $(BUILD_DIR)/jokes.sql
+	echo "CREATE TABLE chuck_norris (id SERIAL NOT NULL, joke VARCHAR NOT NULL, PRIMARY KEY (id));" >> $(BUILD_DIR)/jokes.sql
+	@for i in {1..10}; do \
+	  JOKE=`http https://api.chucknorris.io/jokes/random | jq -r '.value' | sed "s/'/''/g"` ; \
+	  echo "INSERT INTO chuck_norris(joke) VALUES ('$$JOKE');" >> $(BUILD_DIR)/jokes.sql ; \
+	done
 
 .PHONY: build-docker-images
 build-docker-images: build-api-docker-image build-database-docker-image ## Build docker images

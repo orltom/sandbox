@@ -1,11 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
+	"log"
 	"net/http"
 	"os"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -30,7 +32,49 @@ func main() {
 }
 
 func randomJokes(c *gin.Context) {
+	msg := "hello world"
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		log.Fatalln(err)
+		msg = fmt.Sprintf("db error: %s", err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatalln(err)
+		msg = fmt.Sprintf("db error: %s", err)
+	}
+
+	var joke string
+	rows, err := db.Query("SELECT joke FROM chuck_norris")
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatalln(err)
+		msg = fmt.Sprintf("db error: %s", err)
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&joke)
+		if err != nil {
+			log.Fatalln(err)
+			msg = fmt.Sprintf("db error: %s", err)
+		}
+		msg = joke
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "hello world",
+		"message": msg,
 	})
 }
+
+const (
+	host     = "database.default"
+	port     = 5432
+	user     = "postgres"
+	password = "example"
+	dbname   = "jokes"
+)

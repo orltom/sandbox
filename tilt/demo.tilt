@@ -1,10 +1,17 @@
 local_resource(
   dir='..',
-  name='build',
+  name='build_api',
   cmd='make build-api',
-  deps=['cmd'],
-  labels=["demo"],
+  deps=['../cmd'],
+  labels=["build"],
   allow_parallel=False
+)
+
+local_resource(
+  dir='..',
+  name='download_jokes',
+  cmd='make download-jokes',
+  labels=["build"]
 )
 
 docker_build(
@@ -12,9 +19,7 @@ docker_build(
   context="..",
   dockerfile="../config/docker/httpd/Dockerfile",
   build_args={'TARGETARCH': 'amd64'},
-  only=[
-    'bin/golang-http-example-amd64',
-  ],
+  only=['cmd', 'bin']
 )
 
 k8s_yaml([
@@ -38,6 +43,7 @@ docker_build(
   ref="golang-db-example:latest",
   context="..",
   dockerfile="../config/docker/database/Dockerfile",
+  only=['build']
 )
 
 k8s_yaml([
