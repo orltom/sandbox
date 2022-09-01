@@ -1,0 +1,16 @@
+name: check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repo
+        uses: actions/checkout@v3
+
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '>=1.18.0'
+
+    - run: make build
