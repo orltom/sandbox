@@ -80,15 +80,11 @@ download-jokes: ## Download random chuck norris jokes
 	done
 
 .PHONY: build-docker-images
-build-docker-images: build-api-docker-image build-database-docker-image ## Build docker images
+build-docker-images: build-api-docker-image ## Build docker images
 
 .PHONY: build-api-docker-image
 build-api-docker-image: build ## Build API docker images
-	$(call build-docker-image,$(API_IMG),config/docker/httpd/Dockerfile)
-
-.PHONY: build-database-docker-image
-build-database-docker-image: download-jokes ## Build DB docker images
-	$(call build-docker-image,$(DB_IMG),config/docker/database/Dockerfile)
+	$(call build-docker-image,$(API_IMG),config/Dockerfile)
 
 define build-docker-image
 DOCKER_BUILDKIT=1 docker build --platform linux/amd64 -t "$(1)" \

@@ -16,8 +16,18 @@ spec:
     spec:
       containers:
       - name: database
-        image: golang-db-example:latest
+        image: postgres:alpine
         imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /docker-entrypoint-initdb.d/jokes.sql
+            name: config-volume
+            subPath: jokes.sql
         env:
           - name: POSTGRES_PASSWORD
             value: example
+          - name: POSTGRES_DB
+            value: jokes
+      volumes:
+        - configMap:
+            name: jokes
+          name: config-volume

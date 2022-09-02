@@ -3,11 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.GET("/jokes", randomJokes)
+	router.GET("/joke", randomJoke)
 
 	if err := router.Run(":8080"); err != nil {
 		println("Can not start web application")
@@ -31,7 +32,7 @@ func main() {
 	}
 }
 
-func randomJokes(c *gin.Context) {
+func randomJoke(c *gin.Context) {
 	msg := "hello world"
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
@@ -49,7 +50,7 @@ func randomJokes(c *gin.Context) {
 	}
 
 	var joke string
-	rows, err := db.Query("SELECT joke FROM chuck_norris")
+	rows, err := db.Query("SELECT joke FROM chuck_norris ORDER BY RANDOM() LIMIT 1")
 	defer rows.Close()
 
 	if err != nil {

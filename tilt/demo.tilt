@@ -7,24 +7,17 @@ local_resource(
   allow_parallel=False
 )
 
-local_resource(
-  dir='..',
-  name='download_jokes',
-  cmd='make download-jokes',
-  labels=["build"]
-)
-
 docker_build(
   ref="golang-http-example:latest",
   context="..",
-  dockerfile="../config/docker/httpd/Dockerfile",
+  dockerfile="../config/Dockerfile",
   build_args={'TARGETARCH': 'amd64'},
   only=['cmd', 'bin']
 )
 
 k8s_yaml([
-    '../config/k8s/httpd/deployment.yaml',
-    '../config/k8s/httpd/service.yaml',
+    '../deployment/k8s/httpd/deployment.yaml',
+    '../deployment/k8s/httpd/service.yaml',
 ])
 
 k8s_resource(
@@ -32,26 +25,23 @@ k8s_resource(
   port_forwards=[
       port_forward(
           local_port=8080,
-          link_path='/jokes',
-          name='random jokes (REST API)'
+          link_path='/joke',
+          name='random joke (REST API)'
       )
   ],
   labels=["demo"]
 )
 
-docker_build(
-  ref="golang-db-example:latest",
-  context="..",
-  dockerfile="../config/docker/database/Dockerfile",
-  only=['build']
+k8s_yaml(
+    yaml=[
+        kustomize('../deployment/k8s/database')
+    ]
 )
-
-k8s_yaml([
-    '../config/k8s/database/deployment.yaml',
-    '../config/k8s/database/service.yaml',
-])
 
 k8s_resource(
   workload='database',
+  objects=[
+      'jokes:ConfigMap'
+  ],
   labels=["demo"]
 )
