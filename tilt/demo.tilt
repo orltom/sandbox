@@ -2,7 +2,7 @@ local_resource(
   dir='..',
   name='build_api',
   cmd='make build-api',
-  deps=['../cmd'],
+  deps=['../cmd', '../internal'],
   labels=["build"],
   allow_parallel=False
 )
@@ -12,7 +12,7 @@ docker_build(
   context="..",
   dockerfile="../config/Dockerfile",
   build_args={'TARGETARCH': 'amd64'},
-  only=['cmd', 'bin']
+  only=['cmd', 'bin', 'internal']
 )
 
 k8s_yaml([
@@ -25,7 +25,7 @@ k8s_resource(
   port_forwards=[
       port_forward(
           local_port=8080,
-          link_path='/joke',
+          link_path='/jokes/random',
           name='random joke (REST API)'
       )
   ],

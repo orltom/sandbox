@@ -1,4 +1,4 @@
-module orltom.dev/go-http-example
+module orltom.dev/golang-http-example
 
 go 1.18
 

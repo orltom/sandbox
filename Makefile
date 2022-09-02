@@ -42,7 +42,7 @@ gomod:
 .PHONY: fmt
 fmt: $(GOIMPORTS) $(GCI) ## Run goimports
 	@for d in $$(go list -f '{{.Dir}}' ./...); do \
-		find "$$d" -maxdepth 1 -name "*.go" -not -path "*generated*" -not -path "*mocks*" -exec "$(GOIMPORTS)" -local 'crypto-cli/' -w {} \; ;\
+		find "$$d" -maxdepth 1 -name "*.go" -not -path "*generated*" -not -path "*mocks*" -exec "$(GOIMPORTS)" -local 'golang-http-example' -w {} \; ;\
 	done
 
 
@@ -65,8 +65,8 @@ go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.
 build: build-api build-docker-images ## Build web application and docker images
 
 .PHONY: build-api
-build-api: ## Build manager & network-manager binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/golang-http-example-amd64" ./...
+build-api: ## Build rest api application
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o "$(OUTPUT_DIRECTORY)/" ./...
 
 .PHONY:
 download-jokes: ## Download random chuck norris jokes

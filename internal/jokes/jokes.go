@@ -1,39 +1,16 @@
-package main
+package jokes
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
 )
 
-func main() {
-	gin.DisableConsoleColor()
-	router := gin.Default()
-	router.Use(gin.Logger())
-
-	// Recovery middleware recovers from any panics and writes a 500 if there was one.
-	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered any) {
-		if err, ok := recovered.(string); ok {
-			c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", err))
-		}
-		c.AbortWithStatus(http.StatusInternalServerError)
-	}))
-
-	router.GET("/joke", randomJoke)
-
-	if err := router.Run(":8080"); err != nil {
-		println("Can not start web application")
-		os.Exit(1)
-	}
-}
-
-func randomJoke(c *gin.Context) {
-	msg := "hello world"
+func Random(c *gin.Context) {
+	var msg = ""
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlconn)

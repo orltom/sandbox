@@ -15,6 +15,6 @@ spec:
         app: api
     spec:
       containers:
-      - name: api
+      - name: internal
         image: golang-http-example:latest
         imagePullPolicy: Always
