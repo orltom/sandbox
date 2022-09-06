@@ -25,7 +25,7 @@ k8s_resource(
   port_forwards=[
       port_forward(
           local_port=8080,
-          link_path='/jokes/random',
+          link_path='/api/jokes/random',
           name='random joke (REST API)'
       )
   ],

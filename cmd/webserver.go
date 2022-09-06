@@ -23,7 +23,8 @@ func Start() {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.GET("/jokes/random", jokes.Random)
+	router.GET("/api/jokes/random", jokes.Random)
+	router.GET("/api/jokes/:UUID", jokes.GetJokeByUUID)
 
 	if err := router.Run(":8080"); err != nil {
 		println("Can not start web application")
