@@ -1,19 +1,29 @@
 package cmd
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
-	"orltom.dev/golang-http-example/internal/jokes"
+	"orltom.dev/golang-http-example/internal/resources"
+	"orltom.dev/golang-http-example/internal/services"
 )
 
 func Start() {
 	gin.DisableConsoleColor()
 	router := gin.Default()
 	router.Use(gin.Logger())
+
+	db, err := openDatabase()
+	if err != nil {
+		os.Exit(1)
+	}
+
+	service := services.NewDatabaseJokeService(db)
+	rest := resources.NewJokeRestResource(service)
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered any) {
@@ -23,11 +33,34 @@ func Start() {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.GET("/api/jokes/random", jokes.Random)
-	router.GET("/api/jokes/:UUID", jokes.GetJokeByUUID)
+	router.GET("/api/jokes/random", rest.Random)
+	router.GET("/api/jokes/:UUID", rest.GetJokeByUUID)
 
 	if err := router.Run(":8080"); err != nil {
 		println("Can not start web application")
 		os.Exit(1)
 	}
+
 }
+
+func openDatabase() (*sql.DB, error) {
+	datasource := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	db, err := sql.Open("postgres", datasource)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+const (
+	host     = "database.default"
+	port     = 5432
+	user     = "postgres"
+	password = "example"
+	dbname   = "jokes"
+)
