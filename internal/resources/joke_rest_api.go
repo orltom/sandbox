@@ -2,7 +2,7 @@ package resources
 
 import "github.com/gin-gonic/gin"
 
-type JokeRestApi interface {
+type JokeRestAPI interface {
 	GetJokeByUUID(c *gin.Context)
 	Random(c *gin.Context)
 	Add(c *gin.Context)

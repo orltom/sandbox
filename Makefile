@@ -53,7 +53,7 @@ check: lint go-licenses-check
 .PHONY: lint
 lint: $(GOLANGCI_LINT) | $(REPORT_DIR) ## Run golangci-lint against code
 	$(GOLANGCI_LINT) version
-	$(GOLANGCI_LINT) run -v
+	$(GOLANGCI_LINT) run -v --timeout=3m
 
 .PHONY: go-licenses-check
 go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.

@@ -1,0 +1,101 @@
+run:
+  go: 1.18
+
+output:
+  format: checkstyle:build/reports/golangci-lint-report.xml,colored-line-number
+
+linters:
+  enable:
+    - gomodguard
+    - goimports
+    - goheader
+    - errcheck
+    - forbidigo
+    - exhaustive
+    - stylecheck
+    - revive
+    - gci
+
+linters-settings:
+  gomodguard:
+    blocked:
+      modules:
+        - go.uber.org/zap:
+            recommendations:
+              - github.com/go-logr/logr
+        - k8s.io/klog/v2:
+            recommendations:
+              - github.com/go-logr/logr
+        - google.golang.org/genproto:
+            recommendations:
+              - google.golang.org/protobuf
+              - google.golang.org/grpc
+        - github.com/golang/protobuf:
+            recommendations:
+              - google.golang.org/protobuf
+        - gopkg.in/yaml.v2:
+            recommendations:
+              - sigs.k8s.io/yaml
+        - gopkg.in/yaml.v3:
+            recommendations:
+              - sigs.k8s.io/yaml
+        - github.com/pkg/errors:
+            reason: "Use errors.New(...) or fmt.Errorf(...)"
+  goimports:
+    local-prefixes: orltom.dev/
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    disable-default-exclusions: true
+  forbidigo:
+    forbid:
+      - ^panic$
+  exhaustive:
+    check-generated: false
+    default-signifies-exhaustive: false
+    ignore-enum-members: ""
+    package-scope-only: false
+  stylecheck:
+    go: "1.19"
+    checks: ["all"]
+  gosimple:
+    go: "1.19"
+    checks: ["all"]
+  staticcheck:
+    go: "1.19"
+    checks: ["all"]
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    enable-all-rules: false
+    confidence: 0.1
+    rules:
+      - name: early-return
+      - name: error-strings
+      - name: unexported-return
+      - name: unused-parameter
+      - name: use-any
+      - name: deep-exit
+      - name: empty-lines
+      - name: imports-blacklist
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(orltom.dev)
+
+issues:
+  exclude-rules:
+    - path: _test.go
+      linters:
+        - unused
+        - deadcode
+      text: is unused
+    - path: main_test.go
+      linters:
+        - revive
+      text: 'deep-exit'
+    - path: main.go
+      linters:
+        - gomodguard
+      text: '`github.com/go-logr/logr` is a recommended module.'

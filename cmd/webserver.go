@@ -3,23 +3,24 @@ package cmd
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
+
 	"orltom.dev/golang-http-example/internal/resources"
 	"orltom.dev/golang-http-example/internal/services"
 )
 
-func Start() {
+func Start() error {
 	gin.DisableConsoleColor()
 	router := gin.Default()
 	router.Use(gin.Logger())
 
 	db, err := openDatabase()
 	if err != nil {
-		os.Exit(1)
+		return fmt.Errorf("can not open connection to database. %v", err)
 	}
 
 	service := services.NewDatabaseJokeService(db)
@@ -35,12 +36,13 @@ func Start() {
 
 	router.GET("/api/jokes/random", rest.Random)
 	router.GET("/api/jokes/:UUID", rest.GetJokeByUUID)
+	router.POST("/api/jokes/", rest.Add)
 
 	if err := router.Run(":8080"); err != nil {
-		println("Can not start web application")
-		os.Exit(1)
+		log.Printf("Can not start web application. %v", err)
+		return fmt.Errorf("can not start web application. %v", err)
 	}
-
+	return nil
 }
 
 func openDatabase() (*sql.DB, error) {
