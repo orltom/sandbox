@@ -3,8 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 type postgresJokeRepository struct {
@@ -17,7 +15,7 @@ func NewPostgresJokeRepository(db *sql.DB) JokeRepository {
 	return &postgresJokeRepository{db: db}
 }
 
-func (s *postgresJokeRepository) Get(uuid string) (*Joke, error) {
+func (s *postgresJokeRepository) FindByID(uuid string) (*Joke, error) {
 	query := "SELECT uuid, joke FROM jokes WHERE uuid = $1 LIMIT 1"
 	row := s.db.QueryRow(query, uuid)
 
@@ -29,8 +27,7 @@ func (s *postgresJokeRepository) Get(uuid string) (*Joke, error) {
 	return &joke, nil
 }
 
-func (s *postgresJokeRepository) Add(joke string) (*Joke, error) {
-	id := uuid.New().String()
+func (s *postgresJokeRepository) Create(uuid string, joke string) (*Joke, error) {
 	query := "INSERT INTO jokes (uuid, joke) VALUES ($1, $2)"
 	tx, err := s.db.Begin()
 	if err != nil {
@@ -43,7 +40,7 @@ func (s *postgresJokeRepository) Add(joke string) (*Joke, error) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(id, joke)
+	_, err = stmt.Exec(uuid, joke)
 	if err != nil {
 		return nil, fmt.Errorf("could not add joke to database. Reason: %v", err)
 	}
@@ -53,8 +50,8 @@ func (s *postgresJokeRepository) Add(joke string) (*Joke, error) {
 		return nil, fmt.Errorf("could not add joke to database. Reason: %v", err)
 	}
 
-	stmt.QueryRow(id, joke)
-	return s.Get(id)
+	stmt.QueryRow(uuid, joke)
+	return s.FindByID(uuid)
 }
 
 func (s *postgresJokeRepository) Random() (*Joke, error) {

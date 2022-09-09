@@ -6,7 +6,7 @@ type Joke struct {
 }
 
 type JokeRepository interface {
-	Get(id string) (*Joke, error)
+	FindByID(id string) (*Joke, error)
 	Random() (*Joke, error)
-	Add(joke string) (*Joke, error)
+	Create(uuid string, joke string) (*Joke, error)
 }

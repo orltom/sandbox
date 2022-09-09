@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,12 +22,11 @@ func Start(handler resources.JokeRestAPI) error {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.GET("/api/jokes/random", handler.Random)
-	router.GET("/api/jokes/:UUID", handler.GetJokeByUUID)
-	router.POST("/api/jokes/", handler.Add)
+	router.GET("/api/v1/jokes/random", handler.Random)
+	router.GET("/api/v1/jokes/:UUID", handler.GetJokeByUUID)
+	router.POST("/api/v1/jokes/", handler.Add)
 
 	if err := router.Run(":8080"); err != nil {
-		log.Printf("Can not start web application. %v", err)
 		return fmt.Errorf("can not start web application. %v", err)
 	}
 	return nil

@@ -48,7 +48,7 @@ fmt: $(GOIMPORTS) $(GCI) ## Run goimports
 
 ##@ Checks
 .PHONY: check
-check: lint go-licenses-check
+check: lint go-licenses-check test
 
 .PHONY: lint
 lint: $(GOLANGCI_LINT) | $(REPORT_DIR) ## Run golangci-lint against code
@@ -58,6 +58,10 @@ lint: $(GOLANGCI_LINT) | $(REPORT_DIR) ## Run golangci-lint against code
 .PHONY: go-licenses-check
 go-licenses-check: $(GOLICENSES) ## Checks for forbidden Go licenses.
 	$(GOLICENSES) check ./...
+
+.PHONY: test
+test: $(ENVTEST) $(GOTESTSUM)  ## Run unit tests
+	$(GOTESTSUM)
 
 
 ##@ Build

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 
 	"orltom.dev/golang-http-example/internal/repository"
 )
@@ -21,7 +22,7 @@ func NewJokeRestResource(service repository.JokeRepository) JokeRestAPI {
 
 func (r *jokeRestResource) GetJokeByUUID(c *gin.Context) {
 	var uuid = c.Param("UUID")
-	joke, err := r.repository.Get(uuid)
+	joke, err := r.repository.FindByID(uuid)
 	if err != nil {
 		log.Printf("Could not get joke from database. %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -57,7 +58,8 @@ func (r *jokeRestResource) Add(c *gin.Context) {
 		return
 	}
 
-	joke, err := r.repository.Add(newJoke.Joke)
+	uuid := uuid.New().String()
+	joke, err := r.repository.Create(uuid, newJoke.Joke)
 	if err != nil {
 		log.Printf("Could not store joke to database. %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
