@@ -14,12 +14,20 @@ Setup k3d cluster
 k3d cluster create dev-cluster \
   --agents-memory=8G \
   --registry-create dev-cluster-registry \
-  -p "30000-30099:30000-30099@server:0"
+  --api-port 6550 \
+  -p "8081:80@loadbalancer" \
+  --agents 2
 ```
 
 ## Usage
+Build and deploy
 ```shell
 tilt up
+```
+
+Test REST endpoint
+```shell
+curl localhost:8081/api/v1/jokes/random
 ```
 
 ## Contributing

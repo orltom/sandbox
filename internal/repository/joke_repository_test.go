@@ -59,7 +59,7 @@ func TestRandom(t *testing.T) {
 func NewDBMock() (*sql.DB, sqlmock.Sqlmock) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		log.Fatalf("could not mock database. %v", err)
+		log.Printf("could not mock database. %v", err)
 	}
 	return db, mock
 }
