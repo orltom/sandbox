@@ -3,6 +3,7 @@ module orltom.dev/golang-http-example
 go 1.18
 
 require (
+	github.com/caarlos0/env/v6 v6.10.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.6

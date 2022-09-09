@@ -6,22 +6,22 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"orltom.dev/golang-http-example/internal/services"
+	"orltom.dev/golang-http-example/internal/repository"
 )
 
 type jokeRestResource struct {
-	service services.JokeService
+	repository repository.JokeRepository
 }
 
 var _ JokeRestAPI = &jokeRestResource{}
 
-func NewJokeRestResource(service services.JokeService) JokeRestAPI {
-	return &jokeRestResource{service: service}
+func NewJokeRestResource(service repository.JokeRepository) JokeRestAPI {
+	return &jokeRestResource{repository: service}
 }
 
 func (r *jokeRestResource) GetJokeByUUID(c *gin.Context) {
 	var uuid = c.Param("UUID")
-	joke, err := r.service.Get(uuid)
+	joke, err := r.repository.Get(uuid)
 	if err != nil {
 		log.Printf("Could not get joke from database. %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -34,7 +34,7 @@ func (r *jokeRestResource) GetJokeByUUID(c *gin.Context) {
 }
 
 func (r *jokeRestResource) Random(c *gin.Context) {
-	joke, err := r.service.Random()
+	joke, err := r.repository.Random()
 	if err != nil {
 		log.Printf("Could not get random joke from database. %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -47,7 +47,17 @@ func (r *jokeRestResource) Random(c *gin.Context) {
 }
 
 func (r *jokeRestResource) Add(c *gin.Context) {
-	joke, err := r.service.Add("bla")
+	newJoke := SaveJoke{}
+	if err := c.BindJSON(&newJoke); err != nil {
+		log.Printf("Invalid JSON request. %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid JSON input",
+		})
+		c.Abort()
+		return
+	}
+
+	joke, err := r.repository.Add(newJoke.Joke)
 	if err != nil {
 		log.Printf("Could not store joke to database. %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{

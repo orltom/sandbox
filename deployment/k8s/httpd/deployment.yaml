@@ -18,3 +18,14 @@ spec:
       - name: internal
         image: golang-http-example:latest
         imagePullPolicy: Always
+        env:
+          - name: DB_USER_NAME
+            value: "postgres"
+          - name: DB_PASSWORD
+            value: "example"
+          - name: DB_NAMES
+            value: "jokes"
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_HOST
+            value: "database.default"

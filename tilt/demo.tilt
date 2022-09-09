@@ -1,9 +1,18 @@
 local_resource(
   dir='..',
-  name='build_api',
+  name='lint',
+  cmd='make lint',
+  deps=['../cmd', '../internal'],
+  labels=["check"],
+  allow_parallel=False
+)
+
+local_resource(
+  dir='..',
+  name='build',
   cmd='make build-api',
   deps=['../cmd', '../internal'],
-  labels=["build"],
+  labels=["check"],
   allow_parallel=False
 )
 

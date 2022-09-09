@@ -1,4 +1,4 @@
-package services
+package repository
 
 import (
 	"database/sql"
@@ -7,17 +7,17 @@ import (
 	"github.com/google/uuid"
 )
 
-type databaseJokeService struct {
+type postgresJokeRepository struct {
 	db *sql.DB
 }
 
-var _ JokeService = &databaseJokeService{}
+var _ JokeRepository = &postgresJokeRepository{}
 
-func NewDatabaseJokeService(db *sql.DB) JokeService {
-	return &databaseJokeService{db: db}
+func NewPostgresJokeRepository(db *sql.DB) JokeRepository {
+	return &postgresJokeRepository{db: db}
 }
 
-func (s *databaseJokeService) Get(uuid string) (*Joke, error) {
+func (s *postgresJokeRepository) Get(uuid string) (*Joke, error) {
 	query := "SELECT uuid, joke FROM jokes WHERE uuid = $1 LIMIT 1"
 	row := s.db.QueryRow(query, uuid)
 
@@ -29,7 +29,7 @@ func (s *databaseJokeService) Get(uuid string) (*Joke, error) {
 	return &joke, nil
 }
 
-func (s *databaseJokeService) Add(joke string) (*Joke, error) {
+func (s *postgresJokeRepository) Add(joke string) (*Joke, error) {
 	id := uuid.New().String()
 	query := "INSERT INTO jokes (uuid, joke) VALUES ($1, $2)"
 	tx, err := s.db.Begin()
@@ -57,7 +57,7 @@ func (s *databaseJokeService) Add(joke string) (*Joke, error) {
 	return s.Get(id)
 }
 
-func (s *databaseJokeService) Random() (*Joke, error) {
+func (s *postgresJokeRepository) Random() (*Joke, error) {
 	query := "SELECT uuid, joke FROM jokes ORDER BY RANDOM() LIMIT 1"
 	row := s.db.QueryRow(query)
 

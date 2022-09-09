@@ -7,3 +7,7 @@ type JokeRestAPI interface {
 	Random(c *gin.Context)
 	Add(c *gin.Context)
 }
+
+type SaveJoke struct {
+	Joke string `json:"joke,omitempty"`
+}
