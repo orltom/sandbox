@@ -42,11 +42,16 @@ k8s_yaml([
 k8s_resource(
   workload='api',
   port_forwards=[
-      port_forward(
-          local_port=8080,
-          link_path='/api/v1/jokes/random',
-          name='random joke (REST API)'
-      )
+    port_forward(
+        local_port=8080,
+        link_path='/api/v1/jokes/random',
+        name='random'
+    ),
+    port_forward(
+        local_port=9090,
+        link_path='/metrics',
+        name='metrics'
+    )
   ],
   labels=["demo"]
 )

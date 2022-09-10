@@ -1,0 +1,31 @@
+load('ext://helm_resource', 'helm_resource', 'helm_repo')
+
+k8s_yaml('../deployment/k8s/prometheus/namespace.yaml')
+k8s_resource(
+    new_name="telemetry-namespace",
+    objects=[
+        'telemetry:namespace',
+    ],
+    labels=["telemetry"]
+)
+
+helm_repo(
+    name='prometheus-repository',
+    url='https://prometheus-community.github.io/helm-charts',
+    labels=['telemetry']
+)
+
+helm_resource(
+    namespace='telemetry',
+    name='prometheus-deploy',
+    chart='prometheus-repository/kube-prometheus-stack',
+    resource_deps=['prometheus-repository', 'telemetry-namespace'],
+    port_forwards=[
+        port_forward(
+            local_port=9090,
+            name='prometheus'
+        )
+    ],
+    flags=['-f', '../deployment/k8s/prometheus/values.yaml', '--version', '35.2.0'],
+    labels=['telemetry']
+)

@@ -15,7 +15,7 @@ spec:
         app: api
     spec:
       containers:
-      - name: internal
+      - name: api
         image: golang-http-example:latest
         imagePullPolicy: Always
         env:
@@ -29,3 +29,13 @@ spec:
             value: "5432"
           - name: DB_HOST
             value: "database.default"
+        ports:
+          - containerPort: 8080
+            name: http
+          - containerPort: 9090
+            name: metrics
+        resources:
+          requests:
+            memory: "10Mi"
+          limits:
+            memory: "50Mi"
