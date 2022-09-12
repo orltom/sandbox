@@ -29,3 +29,13 @@ helm_resource(
     flags=['-f', '../deployment/k8s/prometheus/values.yaml', '--version', '35.2.0'],
     labels=['telemetry']
 )
+
+local_resource(
+    name='grafana-portforward',
+    serve_cmd='kubectl wait --for=condition=ready pod --namespace telemetry --selector "app.kubernetes.io/name=grafana" && kubectl port-forward --namespace telemetry $(kubectl get pods --namespace telemetry --selector "app.kubernetes.io/name=grafana" --output=name) 3000:3000',
+    links=[
+        link('http://localhost:3000/grafana', 'Grafana')
+    ],
+    resource_deps=['prometheus-deploy'],
+    labels=['telemetry']
+)
