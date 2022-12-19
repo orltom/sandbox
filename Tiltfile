@@ -4,7 +4,9 @@ analytics_settings(enable=False)
 
 allow_k8s_contexts('default')
 
-include('./tilt/demo.tilt')
+include('./tilt/database.tilt')
+include('./tilt/httpd.tilt')
+include('./tilt/api.tilt')
 
 include('./tilt/telemetry.tilt')
 

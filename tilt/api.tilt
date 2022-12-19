@@ -1,0 +1,38 @@
+local_resource(
+  dir='..',
+  name='build api',
+  cmd='make build-api',
+  deps=['../cmd', '../internal'],
+  labels=["demo"],
+  allow_parallel=False
+)
+
+docker_build(
+  ref="golang-http-example:latest",
+  context="..",
+  dockerfile="../Dockerfile",
+  build_args={'TARGETARCH': 'amd64'},
+  only=['cmd', 'bin', 'internal']
+)
+
+k8s_yaml(
+    yaml=[kustomize('../deployment/api/overlay/tilt')]
+)
+
+k8s_resource(
+  workload='api',
+  port_forwards=[
+    port_forward(
+        local_port=8080,
+        link_path='/api/v1/jokes/random',
+        name='random'
+    ),
+    port_forward(
+        local_port=9090,
+        link_path='/metrics',
+        name='metrics'
+    )
+  ],
+  labels=["demo"]
+)
+

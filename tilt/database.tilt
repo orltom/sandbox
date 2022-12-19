@@ -1,0 +1,11 @@
+k8s_yaml(
+    yaml=[kustomize('../deployment/database/overlay/tilt')]
+)
+
+k8s_resource(
+  workload='database',
+  objects=[
+      'jokes:ConfigMap'
+  ],
+  labels=["demo"]
+)
