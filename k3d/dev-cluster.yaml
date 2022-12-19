@@ -1,0 +1,16 @@
+apiVersion: k3d.io/v1alpha4
+kind: Simple
+metadata:
+  name: dev-cluster
+kubeAPI:
+  hostPort: "6550"
+ports:
+  - port: 8081:80
+    nodeFilters:
+      - loadbalancer
+registries:
+  create:
+    name: dev-cluster-registry
+options:
+  runtime:
+    agentsMemory: "4G"

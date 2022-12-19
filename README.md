@@ -11,12 +11,7 @@ A simple demo web application written in Golang.
 ## Setup
 Setup k3d cluster
 ```shell
-k3d cluster create dev-cluster \
-  --agents-memory=8G \
-  --registry-create dev-cluster-registry \
-  --api-port 6550 \
-  -p "8081:80@loadbalancer" \
-  --agents 2
+k3d cluster create --config k3d/dev-cluster.yaml
 ```
 
 ## Usage

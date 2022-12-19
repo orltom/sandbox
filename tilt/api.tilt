@@ -1,16 +1,16 @@
 local_resource(
-  dir='..',
+  dir='../api',
   name='build api',
   cmd='make build-api',
-  deps=['../cmd', '../internal'],
+  deps=['../api/cmd', '../api/internal'],
   labels=["demo"],
   allow_parallel=False
 )
 
 docker_build(
   ref="golang-http-example:latest",
-  context="..",
-  dockerfile="../Dockerfile",
+  context="../api",
+  dockerfile="../api/Dockerfile",
   build_args={'TARGETARCH': 'amd64'},
   only=['cmd', 'bin', 'internal']
 )
