@@ -4,7 +4,7 @@ ARG TARGETARCH
 
 WORKDIR /
 
-COPY bin/golang-http-example ./golang-http-example
+COPY ../bin/golang-http-example ./golang-http-example
 
 ENTRYPOINT ["/golang-http-example"]
 

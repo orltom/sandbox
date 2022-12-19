@@ -19,4 +19,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - run: make build
+      - name: build api application
+        run: |
+          cd api
+          make build
