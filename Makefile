@@ -88,7 +88,7 @@ build-docker-images: build-api-docker-image ## Build docker images
 
 .PHONY: build-api-docker-image
 build-api-docker-image: build ## Build API docker images
-	$(call build-docker-image,$(API_IMG),config/Dockerfile)
+	$(call build-docker-image,$(API_IMG),Dockerfile)
 
 define build-docker-image
 DOCKER_BUILDKIT=1 docker build --platform linux/amd64 -t "$(1)" \
