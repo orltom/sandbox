@@ -8,6 +8,7 @@ It intends to explore all facets of the application lifecycle, from development 
 * Install [kubectl](https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
 * Install [k3d](https://k3d.io/)
 * Install [tilt](https://tilt.dev/)
+* Install [npm](https://nodejs.org/en/download/package-manager)
 
 ## Setup
 Setup k3d cluster
