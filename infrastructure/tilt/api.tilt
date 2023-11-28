@@ -1,22 +1,22 @@
 local_resource(
-  dir='../api',
+  dir='../../applications/api',
   name='build api',
-  cmd='make build-api',
-  deps=['../api/cmd', '../api/internal'],
-  labels=["demo"],
+  cmd='make build',
+  deps=['../../applications/api/cmd', '../../applications/api/internal'],
+  labels=["applications"],
   allow_parallel=False
 )
 
 docker_build(
   ref="golang-http-example:latest",
-  context="../api",
-  dockerfile="../api/Dockerfile",
+  context="../../applications/api",
+  dockerfile="../../applications/api/Dockerfile",
   build_args={'TARGETARCH': 'amd64'},
   only=['cmd', 'bin', 'internal']
 )
 
 k8s_yaml(
-    yaml=[kustomize('../deployment/api/overlay/tilt')]
+    yaml=[kustomize('../../deployment/api/overlay/tilt')]
 )
 
 k8s_resource(
@@ -33,6 +33,6 @@ k8s_resource(
         name='metrics'
     )
   ],
-  labels=["demo"]
+  labels=["applications"]
 )
 

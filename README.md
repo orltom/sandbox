@@ -1,5 +1,6 @@
-# Simple Web Application Demo
-A simple demo web application written in Golang. 
+# Idea
+This project is a personal playground to learn about new technologies and concepts. 
+It intends to explore all facets of the application lifecycle, from development to operations.
 
 ## Prerequisites
 * Install [docker](https://www.docker.com/)
@@ -11,7 +12,7 @@ A simple demo web application written in Golang.
 ## Setup
 Setup k3d cluster
 ```shell
-k3d cluster create --config k3d/dev-cluster.yaml
+k3d cluster create --config config/k3d/dev-cluster.yaml
 ```
 
 ## Usage

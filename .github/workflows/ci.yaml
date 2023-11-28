@@ -21,5 +21,5 @@ jobs:
 
       - name: build api application
         run: |
-          cd api
+          cd applications/api
           make build

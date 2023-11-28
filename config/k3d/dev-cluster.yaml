@@ -1,7 +1,7 @@
 apiVersion: k3d.io/v1alpha4
 kind: Simple
 metadata:
-  name: dev-cluster
+  name: sandbox-dev-cluster
 kubeAPI:
   hostPort: "6550"
 ports:
@@ -10,7 +10,7 @@ ports:
       - loadbalancer
 registries:
   create:
-    name: dev-cluster-registry
+    name: sandbox-dev-cluster-registry
 options:
   runtime:
     agentsMemory: "4G"
