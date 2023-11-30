@@ -1,0 +1,26 @@
+custom_build(
+    ref='ui:latest',
+    dir="../../applications/ui/",
+    command="npm install && npm run build && docker build -t $EXPECTED_REF .",
+    deps=[
+       '../../applications/ui/src',
+       '../../applications/ui/public'
+    ],
+)
+
+k8s_yaml(
+    yaml=[kustomize('../../deployment/ui/overlay/tilt')]
+)
+
+k8s_resource(
+  workload='ui',
+  objects=['ui:ingress'],
+    port_forwards=[
+      port_forward(
+          local_port=8889,
+          link_path='/',
+          name='portal'
+      )
+    ],
+  labels=["applications"]
+)

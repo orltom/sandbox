@@ -9,19 +9,15 @@ TOOLS_BIN_DIR=${PROJECT_DIR}/tools/bin
 REPORT_DIR=${BUILD_DIR}/reports
 SCRIPT_DIR=${PROJECT_DIR}/scripts
 
-
 GOIMPORTS = $(TOOLS_BIN_DIR)/goimports
 GOLANGCI_LINT = $(TOOLS_BIN_DIR)/golangci-lint
 GOLICENSES = $(TOOLS_BIN_DIR)/go-licenses
 GOTESTSUM = $(TOOLS_BIN_DIR)/gotestsum
 
-API_IMG = golang-http-example:latest
-DB_IMG = golang-db-example:latest
-
-
+API_IMG = api:latest
 
 .PHONY: all
-all: fmt
+all: clean fmt gomod check
 
 
 ##@ General

@@ -4,7 +4,7 @@ ARG TARGETARCH
 
 WORKDIR /
 
-COPY ../bin/golang-http-example ./golang-http-example
+COPY bin/golang-http-example ./golang-http-example
 
 ENTRYPOINT ["/golang-http-example"]
 
@@ -14,6 +14,6 @@ ARG BUILD_DATE
 LABEL \
 	org.opencontainers.image.title="GO webapplication example" \
 	org.opencontainers.image.description="GO webapplication example" \
-	org.opencontainers.image.documentation="https://github.com/orltom/golang-http-example" \
+	org.opencontainers.image.documentation="https://github.com/orltom/sandbox" \
 	org.opencontainers.image.revision="${GIT_HASH}" \
 	org.opencontainers.image.created="${BUILD_DATE}"

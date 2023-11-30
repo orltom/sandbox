@@ -1,19 +1,13 @@
-local_resource(
-  dir='../../applications/api',
-  name='build api',
-  cmd='make build',
-  deps=['../../applications/api/cmd', '../../applications/api/internal'],
-  labels=["applications"],
-  allow_parallel=False
+custom_build(
+    ref='api:latest',
+    dir="../../applications/api/",
+    command="make build && docker build -t $EXPECTED_REF .",
+    deps=[
+       '../../applications/api/cmd',
+       '../../applications/api/internal'
+    ],
 )
 
-docker_build(
-  ref="golang-http-example:latest",
-  context="../../applications/api",
-  dockerfile="../../applications/api/Dockerfile",
-  build_args={'TARGETARCH': 'amd64'},
-  only=['cmd', 'bin', 'internal']
-)
 
 k8s_yaml(
     yaml=[kustomize('../../deployment/api/overlay/tilt')]
@@ -26,13 +20,10 @@ k8s_resource(
         local_port=8080,
         link_path='/api/v1/jokes/random',
         name='random'
-    ),
-    port_forward(
-        local_port=9090,
-        link_path='/metrics',
-        name='metrics'
     )
   ],
-  labels=["applications"]
+  objects=['api:ingress'],
+  labels=["applications"],
+  resource_deps=['database']
 )
 

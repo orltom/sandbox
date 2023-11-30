@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: golang-http-example:latest
+        image: api:latest
         imagePullPolicy: Always
         env:
           - name: DB_USER_NAME

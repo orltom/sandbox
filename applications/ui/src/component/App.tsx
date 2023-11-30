@@ -1,22 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from '../logo.svg';
 import './App.css';
 
 function App() {
+    const [joke, setJoke] = useState('')
+
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/jokes/random')
+        fetch('http://127.0.0.1.nip.io:8081/api/v1/jokes/random')
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                setJoke(data['joke'])
             })
+            .catch((err) => {
+                console.log(err.message);
+            });
     }, []);
-  return (
-    <div className="App">
-      <header className="App-header">
 
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <header className="App-header" >{joke}</header>
+        </div>
+    );
 }
 
 export default App;

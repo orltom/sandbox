@@ -1,28 +1,64 @@
 run:
-  go: 1.18
+  go: 1.21
+  timeout: 10m
+  skip-files:
+    - "zz_generated.*\\.go$"
+    - ".*conversion.*\\.go$"
+  allow-parallel-runners: true
 
 output:
   format: checkstyle:build/reports/golangci-lint-report.xml,colored-line-number
 
 linters:
+  disable-all: true
   enable:
-    - gomodguard
-    - goimports
-    - goheader
+    - asasalint
+    - asciicheck
+    - bidichk
+    #    - bodyclose
+    #    - depguard
+    - dogsled
+    - dupl
     - errcheck
-    - forbidigo
+    - errchkjson
+    #    - errorlint
     - exhaustive
-    - stylecheck
-    - revive
+    - exportloopref
+    - forbidigo
     - gci
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goheader
+    - goimports
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - importas
+    - ineffassign
+    - makezero
+    - misspell
+    - nakedret
+    - nilerr
+    - nolintlint
+    - prealloc
+    - revive
+    - staticcheck
+    - stylecheck
+    - tagliatelle
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
 
 linters-settings:
   gomodguard:
     blocked:
       modules:
-        - go.uber.org/zap:
-            recommendations:
-              - github.com/go-logr/logr
         - k8s.io/klog/v2:
             recommendations:
               - github.com/go-logr/logr
@@ -31,6 +67,9 @@ linters-settings:
               - google.golang.org/protobuf
               - google.golang.org/grpc
         - github.com/golang/protobuf:
+            recommendations:
+              - google.golang.org/protobuf
+        - github.com/gogo/protobuf:
             recommendations:
               - google.golang.org/protobuf
         - gopkg.in/yaml.v2:
@@ -42,28 +81,13 @@ linters-settings:
         - github.com/pkg/errors:
             reason: "Use errors.New(...) or fmt.Errorf(...)"
   goimports:
-    local-prefixes: orltom.dev/
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-    disable-default-exclusions: true
-  forbidigo:
-    forbid:
-      - ^panic$
-  exhaustive:
-    check-generated: false
-    default-signifies-exhaustive: false
-    ignore-enum-members: ""
-    package-scope-only: false
+    local-prefixes: orltom.dev/golang-http-example/
   stylecheck:
-    go: "1.19"
-    checks: ["all"]
+    go: "1.21"
   gosimple:
-    go: "1.19"
-    checks: ["all"]
+    go: "1.21"
   staticcheck:
-    go: "1.19"
-    checks: ["all"]
+    go: "1.21"
   revive:
     ignore-generated-header: true
     severity: warning
@@ -83,7 +107,11 @@ linters-settings:
       - standard
       - default
       - prefix(orltom.dev)
-
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: goCamel
 issues:
   exclude-rules:
     - path: _test.go
@@ -91,11 +119,3 @@ issues:
         - unused
         - deadcode
       text: is unused
-    - path: main_test.go
-      linters:
-        - revive
-      text: 'deep-exit'
-    - path: main.go
-      linters:
-        - gomodguard
-      text: '`github.com/go-logr/logr` is a recommended module.'

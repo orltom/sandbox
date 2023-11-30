@@ -3,7 +3,7 @@ package setup
 import (
 	"fmt"
 
-	"github.com/caarlos0/env/v6"
+	env "github.com/caarlos0/env/v6"
 )
 
 func LoadEnvConfig() (EnvConfig, error) {

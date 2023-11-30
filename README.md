@@ -3,28 +3,27 @@ This project is a personal playground to learn about new technologies and concep
 It intends to explore all facets of the application lifecycle, from development to operations.
 
 ## Prerequisites
-* Install [docker](https://www.docker.com/)
 * Install [golang](https://go.dev/doc/install)
+* Install [npm](https://nodejs.org/en/download/package-manager)
+* Install [docker](https://www.docker.com/)
 * Install [kubectl](https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
 * Install [k3d](https://k3d.io/)
 * Install [tilt](https://tilt.dev/)
-* Install [npm](https://nodejs.org/en/download/package-manager)
 
-## Setup
+## Development Setup
 Setup k3d cluster
 ```shell
 k3d cluster create --config config/k3d/dev-cluster.yaml
 ```
 
-## Usage
 Build and deploy
 ```shell
 tilt up
 ```
 
-Test REST endpoint
+Open browser 
 ```shell
-curl localhost:8081/api/v1/jokes/random
+http://127.0.0.1.nip.io/ui
 ```
 
 ## Contributing
