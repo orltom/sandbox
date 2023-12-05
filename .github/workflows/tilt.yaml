@@ -1,0 +1,55 @@
+name: tilt
+
+on: [ push, pull_request ]
+
+jobs:
+  tilt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.18.0'
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 21
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: v1.28.4
+
+      - uses: azure/setup-helm@v3
+        with:
+          version: v3.4.0
+
+      - name: checkout git repo
+        uses: actions/checkout@v3
+
+      - name: Install k3d
+        run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+      - name: Install tilt
+        run: curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+
+      - name: Create k3d cluster
+        run: k3d cluster create --config config/k3d/dev-cluster.yaml
+
+      - name: Run tilt
+        run: tilt ci
+
+      - name: Call Front-end Application
+        run: |
+          HTTP_STATUS_CODE=$(curl -LI -s -o /dev/null -w "%{http_code}" 127.0.0.1.nip.io:8081)
+          if [ ${HTTP_STATUS_CODE} -ne 200 ]; then
+            exit 1
+          fi

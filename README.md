@@ -1,6 +1,12 @@
-# Idea
+![build](https://github.com/orltom/sandbox/actions/workflows/ci.yaml/badge.svg)
+![tilt](https://github.com/orltom/sandbox/actions/workflows/tilt.yaml/badge.svg)
+
+# Intention
 This project is a personal playground to learn about new technologies and concepts. 
 It intends to explore all facets of the application lifecycle, from development to operations.
+
+# Project Idea
+The software project idea is to develop a platform that randomly publishes jokes.
 
 ## Prerequisites
 * Install [golang](https://go.dev/doc/install)
@@ -11,19 +17,12 @@ It intends to explore all facets of the application lifecycle, from development 
 * Install [tilt](https://tilt.dev/)
 
 ## Development Setup
-Setup k3d cluster
 ```shell
+# create k8s cluster
 k3d cluster create --config config/k3d/dev-cluster.yaml
-```
 
-Build and deploy
-```shell
+# Build and deploy
 tilt up
-```
-
-Open browser 
-```shell
-http://127.0.0.1.nip.io/ui
 ```
 
 ## Contributing
