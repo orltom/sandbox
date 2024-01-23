@@ -1,0 +1,14 @@
+.navigation-button {
+    border-radius: 50%;
+    color: white;
+    font-size: 100px;
+    display:inline;
+}
+
+.navigation-button-left {
+    float: left;
+}
+
+.navigation-button-right {
+    float: right;
+}

@@ -4,14 +4,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
 
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 2fr 0fr 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -31,6 +30,8 @@
 
 .navigation {
     grid-area: navigation;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .header {
